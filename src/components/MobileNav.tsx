@@ -64,6 +64,7 @@ export default function MobileNav() {
               <Icon className="w-5 h-5" />
               <span className="text-xs mt-1">{item.label}</span>
             </button>
+            oh
           );
         })}
       </div>
