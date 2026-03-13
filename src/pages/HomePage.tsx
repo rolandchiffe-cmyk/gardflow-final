@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { TrendingUp, Users, Calendar, MapPin, Newspaper, ExternalLink, Clock, ChevronRight } from 'lucide-react';
+import { Calendar, Heart, ShoppingBag, Tractor, Store, Wrench, Leaf, Newspaper, ExternalLink, Clock, ChevronRight } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { supabase } from '../lib/supabase';
 
@@ -24,7 +24,7 @@ function NewsPreview({ onViewAll }: { onViewAll: () => void }) {
         .select('id, title, description, url, image_url, published_at, rss_feeds(title)')
         .eq('is_local', true)
         .order('published_at', { ascending: false })
-        .limit(4);
+        .limit(2);
       if (data) setNews(data as NewsItem[]);
       setLoading(false);
     })();
@@ -43,7 +43,7 @@ function NewsPreview({ onViewAll }: { onViewAll: () => void }) {
       <div className="space-y-2">
         {[1, 2].map(i => (
           <div key={i} className="flex gap-3 p-3 bg-white rounded-xl animate-pulse">
-            <div className="w-14 h-14 bg-gray-200 rounded-lg flex-shrink-0" />
+            <div className="w-12 h-12 bg-gray-200 rounded-lg flex-shrink-0" />
             <div className="flex-1 space-y-2 pt-1">
               <div className="h-3 bg-gray-200 rounded w-3/4" />
               <div className="h-3 bg-gray-100 rounded w-1/2" />
@@ -70,11 +70,11 @@ function NewsPreview({ onViewAll }: { onViewAll: () => void }) {
             <img
               src={item.image_url}
               alt=""
-              className="w-14 h-14 object-cover rounded-lg flex-shrink-0 bg-gray-100"
+              className="w-12 h-12 object-cover rounded-lg flex-shrink-0 bg-gray-100"
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
             />
           ) : (
-            <div className="w-14 h-14 bg-gradient-to-br from-teal-50 to-cyan-100 rounded-lg flex-shrink-0 flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-teal-50 to-cyan-100 rounded-lg flex-shrink-0 flex items-center justify-center">
               <Newspaper className="w-5 h-5 text-teal-400" />
             </div>
           )}
@@ -96,9 +96,9 @@ function NewsPreview({ onViewAll }: { onViewAll: () => void }) {
       ))}
       <button
         onClick={onViewAll}
-        className="w-full flex items-center justify-center gap-1.5 py-2.5 text-sm font-medium text-teal-600 hover:text-teal-800 transition"
+        className="w-full flex items-center justify-center gap-1.5 py-2.5 text-sm font-semibold text-teal-600 hover:text-teal-800 transition border border-teal-100 rounded-xl bg-teal-50 hover:bg-teal-100"
       >
-        Voir toutes les actualités <ChevronRight className="w-4 h-4" />
+        Découvrir toute l'actualité <ChevronRight className="w-4 h-4" />
       </button>
     </div>
   );
@@ -107,60 +107,72 @@ function NewsPreview({ onViewAll }: { onViewAll: () => void }) {
 export default function HomePage() {
   const { setCurrentPage } = useApp();
 
-  const highlights = [
-    { id: 'discussions', title: 'Discussions', description: 'Partagez vos idées avec la communauté', icon: TrendingUp, color: 'from-blue-500 to-cyan-500' },
-    { id: 'salons', title: 'Salons', description: 'Rejoignez des groupes de discussion', icon: Users, color: 'from-teal-500 to-green-500' },
-    { id: 'evenements', title: 'Événements', description: 'Découvrez les événements locaux', icon: Calendar, color: 'from-orange-500 to-red-500' },
+  const stories = [
+    { id: 'evenements', icon: Calendar, label: 'Événements', color: 'bg-orange-100', iconColor: 'text-orange-500', ring: 'ring-orange-300' },
+    { id: 'agriculteurs', icon: Tractor, label: 'Agriculteurs', color: 'bg-green-100', iconColor: 'text-green-600', ring: 'ring-green-300' },
+    { id: 'associations', icon: Heart, label: 'Associations', color: 'bg-rose-100', iconColor: 'text-rose-500', ring: 'ring-rose-300' },
+    { id: 'annonces', icon: ShoppingBag, label: 'Annonces', color: 'bg-blue-100', iconColor: 'text-blue-500', ring: 'ring-blue-300' },
   ];
 
-  const commerceSubCategories = [
-    { label: 'Commerces', description: 'Boutiques & services' },
-    { label: 'Artisans', description: 'Savoir-faire local' },
-    { label: 'Produits Locaux', description: 'Circuits courts' },
+  const serviceCards = [
+    { id: 'commerces', icon: Store, label: 'Commerces', description: 'Boutiques & services de proximité', color: 'text-cyan-600', bg: 'bg-cyan-50', border: 'border-cyan-100' },
+    { id: 'commerces', icon: Wrench, label: 'Artisans', description: 'Savoir-faire & métiers locaux', color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100' },
+    { id: 'agriculteurs', icon: Leaf, label: 'Produits Locaux', description: 'Circuits courts & agriculture', color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
   ];
 
   return (
     <div className="space-y-6">
       <div className="bg-gradient-to-r from-blue-900 to-cyan-500 text-white p-6 rounded-2xl">
-        <h2 className="text-2xl font-bold mb-2">Bienvenue sur GardFlow</h2>
-        <p className="text-cyan-100">Connectez-vous avec votre communauté locale dans le Gard Rhodanien</p>
+        <h2 className="text-2xl font-bold mb-1">Bienvenue sur Gardbook</h2>
+        <p className="text-cyan-100 text-sm">Connectez-vous avec votre communauté locale dans le Gard Rhodanien</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        {highlights.map((item) => {
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.id}
-              onClick={() => setCurrentPage(item.id as any)}
-              className={`bg-gradient-to-br ${item.color} text-white p-5 rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1`}
-            >
-              <Icon className="w-8 h-8 mb-3" />
-              <h3 className="font-bold mb-1">{item.title}</h3>
-              <p className="text-xs opacity-90">{item.description}</p>
-            </button>
-          );
-        })}
-        <button
-          onClick={() => setCurrentPage('commerces')}
-          className="bg-gradient-to-br from-green-500 to-emerald-500 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1 text-left"
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <MapPin className="w-7 h-7" />
-            <h3 className="font-bold">Commerces</h3>
-          </div>
-          <div className="space-y-1.5">
-            {commerceSubCategories.map((sub) => (
-              <div key={sub.label} className="flex items-center gap-1.5 bg-white/15 rounded-lg px-2 py-1">
-                <span className="text-xs font-semibold">{sub.label}</span>
-                <span className="text-[10px] opacity-75">· {sub.description}</span>
-              </div>
-            ))}
-          </div>
-        </button>
+      <div>
+        <div className="flex gap-4 overflow-x-auto pb-1 scrollbar-hide">
+          {stories.map((s) => {
+            const Icon = s.icon;
+            return (
+              <button
+                key={s.id + s.label}
+                onClick={() => setCurrentPage(s.id as any)}
+                className="flex flex-col items-center gap-1.5 flex-shrink-0"
+              >
+                <div className={`w-14 h-14 rounded-full ${s.color} ring-2 ${s.ring} flex items-center justify-center shadow-sm hover:scale-105 transition-transform`}>
+                  <Icon className={`w-6 h-6 ${s.iconColor}`} />
+                </div>
+                <span className="text-xs text-gray-600 font-medium w-16 text-center leading-tight">{s.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      <div className="bg-gray-50 rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div>
+        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Services locaux</h3>
+        <div className="space-y-3">
+          {serviceCards.map((card) => {
+            const Icon = card.icon;
+            return (
+              <button
+                key={card.label}
+                onClick={() => setCurrentPage(card.id as any)}
+                className={`w-full flex items-center gap-4 p-4 bg-white rounded-2xl border ${card.border} shadow-sm hover:shadow-md transition-all text-left`}
+              >
+                <div className={`w-11 h-11 rounded-xl ${card.bg} flex items-center justify-center flex-shrink-0`}>
+                  <Icon className={`w-5 h-5 ${card.color}`} />
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-800">{card.label}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{card.description}</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-300 ml-auto flex-shrink-0" />
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
         <div className="flex items-center justify-between px-4 pt-4 pb-3 border-b border-gray-100">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-lg flex items-center justify-center">
@@ -171,12 +183,6 @@ export default function HomePage() {
               <p className="text-xs text-gray-400">Gard Rhodanien</p>
             </div>
           </div>
-          <button
-            onClick={() => setCurrentPage('actualites')}
-            className="text-xs text-teal-600 font-medium hover:text-teal-800 transition flex items-center gap-0.5"
-          >
-            Tout voir <ChevronRight className="w-3.5 h-3.5" />
-          </button>
         </div>
         <div className="p-3">
           <NewsPreview onViewAll={() => setCurrentPage('actualites')} />
