@@ -9,12 +9,13 @@ import AnnoncesPage from './pages/AnnoncesPage';
 import CommercesPage from './pages/CommercesPage';
 import AssociationsPage from './pages/AssociationsPage';
 import EvenementsPage from './pages/EvenementsPage';
-import MessagesPage from './pages/MessagesPage';
 import ProfilePage from './pages/ProfilePage';
 import ModerationPage from './pages/ModerationPage';
 import AdminPanelPage from './pages/AdminPanelPage';
 import CartePage from './pages/CartePage';
 import PreInscriptionPage from './pages/PreInscriptionPage';
+import ActualitesPage from './pages/ActualitesPage';
+import AgriculteurPage from './pages/AgriculteurPage';
 
 function AppContent() {
   const { currentPage, user, loading } = useApp();
@@ -47,7 +48,8 @@ function AppContent() {
     commerces: CommercesPage,
     associations: AssociationsPage,
     evenements: EvenementsPage,
-    messages: MessagesPage,
+    actualites: ActualitesPage,
+    agriculteurs: AgriculteurPage,
     profile: ProfilePage,
     moderation: ModerationPage,
     admin: AdminPanelPage,

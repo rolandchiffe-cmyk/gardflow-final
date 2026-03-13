@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { supabase } from '../lib/supabase';
 import { User } from '@supabase/supabase-js';
 
-type Page = 'home' | 'discussions' | 'salons' | 'annonces' | 'commerces' | 'associations' | 'evenements' | 'messages' | 'profile' | 'moderation' | 'admin' | 'carte';
+type Page = 'home' | 'discussions' | 'salons' | 'annonces' | 'commerces' | 'associations' | 'evenements' | 'actualites' | 'agriculteurs' | 'profile' | 'moderation' | 'admin' | 'carte';
 
 export interface UserProfile {
   id: string;
@@ -27,6 +27,7 @@ interface AppContextType {
   userProfile: UserProfile | null;
   userRole: 'user' | 'admin' | null;
   loading: boolean;
+  pendingModerationCount: number;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
@@ -39,6 +40,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [userRole, setUserRole] = useState<'user' | 'admin' | null>(null);
   const [loading, setLoading] = useState(true);
+  const [pendingModerationCount, setPendingModerationCount] = useState(0);
+
+  const fetchPendingCount = async () => {
+    const [posts, salons] = await Promise.all([
+      supabase.from('posts').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
+      supabase.from('salons').select('id', { count: 'exact', head: true }).eq('status', 'en_attente'),
+    ]);
+    const total = (posts.count ?? 0) + (salons.count ?? 0);
+    setPendingModerationCount(total);
+  };
 
   const fetchUserProfile = async (userId: string) => {
     const { data } = await supabase
@@ -49,7 +60,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     if (data) {
       setUserProfile(data as UserProfile);
-      setUserRole(data.role === 'admin' ? 'admin' : 'user');
+      const role = data.role === 'admin' ? 'admin' : 'user';
+      setUserRole(role);
+      if (role === 'admin') {
+        fetchPendingCount();
+      }
     } else {
       setUserRole('user');
     }
@@ -97,7 +112,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AppContext.Provider value={{ currentPage, setCurrentPage, user, userProfile, userRole, loading, signOut, refreshProfile }}>
+    <AppContext.Provider value={{ currentPage, setCurrentPage, user, userProfile, userRole, loading, pendingModerationCount, signOut, refreshProfile }}>
       {children}
     </AppContext.Provider>
   );

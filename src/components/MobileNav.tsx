@@ -1,4 +1,4 @@
-import { Home, MessageSquare, Users, ShoppingBag, Store, Heart, Calendar, Mail, User, Map } from 'lucide-react';
+import { Home, MessageSquare, Users, ShoppingBag, Store, Heart, Calendar, User, Map, Newspaper } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 
 export default function MobileNav() {
@@ -6,14 +6,13 @@ export default function MobileNav() {
 
   const navItems = [
     { id: 'home' as const, icon: Home, label: 'Accueil' },
-    { id: 'carte' as const, icon: Map, label: 'Carte' },
+    { id: 'actualites' as const, icon: Newspaper, label: 'Actus' },
     { id: 'discussions' as const, icon: MessageSquare, label: 'Discussions' },
     { id: 'salons' as const, icon: Users, label: 'Salons' },
     { id: 'annonces' as const, icon: ShoppingBag, label: 'Annonces' },
     { id: 'commerces' as const, icon: Store, label: 'Commerces' },
     { id: 'associations' as const, icon: Heart, label: 'Associations' },
     { id: 'evenements' as const, icon: Calendar, label: 'Événements' },
-    { id: 'messages' as const, icon: Mail, label: 'Messages' },
     { id: 'profile' as const, icon: User, label: 'Profil' },
   ];
 

@@ -52,7 +52,7 @@ interface PendingPublicite {
 }
 
 export default function ModerationPage() {
-  const { user } = useApp();
+  const { user, userRole } = useApp();
   const [pendingPosts, setPendingPosts] = useState<PendingPost[]>([]);
   const [pendingSalons, setPendingSalons] = useState<PendingSalon[]>([]);
   const [pendingPublicites, setPendingPublicites] = useState<PendingPublicite[]>([]);
@@ -60,10 +60,10 @@ export default function ModerationPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user?.is_admin) {
+    if (userRole === 'admin') {
       loadPendingContent();
     }
-  }, [user, activeTab]);
+  }, [user, userRole, activeTab]);
 
   const loadPendingContent = async () => {
     setLoading(true);
@@ -84,7 +84,7 @@ export default function ModerationPage() {
     } else if (activeTab === 'salons') {
       const { data } = await supabase
         .from('salons')
-        .select('*, users(id, username, prenom, nom, account_type)')
+        .select('*, users!salons_created_by_fkey(id, username, prenom, nom, account_type)')
         .eq('status', 'en_attente')
         .order('created_at', { ascending: false });
 
@@ -232,7 +232,7 @@ export default function ModerationPage() {
     return postDate.toLocaleDateString('fr-FR');
   };
 
-  if (!user?.is_admin) {
+  if (userRole !== 'admin') {
     return (
       <div className="text-center py-12">
         <p className="text-gray-600">Accès réservé aux administrateurs</p>

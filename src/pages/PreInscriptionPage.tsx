@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { MapPin, Users, CheckCircle, ArrowRight, LogIn } from 'lucide-react';
+import { MapPin, Users, CheckCircle, ArrowRight } from 'lucide-react';
 
 const COMMUNES = [
   'Aiguèze',
@@ -57,11 +57,6 @@ export default function PreInscriptionPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [count, setCount] = useState<number | null>(null);
-  const [showLogin, setShowLogin] = useState(false);
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
-  const [loginLoading, setLoginLoading] = useState(false);
-  const [loginError, setLoginError] = useState('');
 
   useEffect(() => {
     fetchCount();
@@ -96,21 +91,6 @@ export default function PreInscriptionPage() {
     setSubmitted(true);
     setLoading(false);
     fetchCount();
-  };
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoginLoading(true);
-    setLoginError('');
-    const { error } = await supabase.auth.signInWithPassword({ email: loginEmail, password: loginPassword });
-    if (error) {
-      if (error.message.includes('Invalid login credentials')) {
-        setLoginError('Email ou mot de passe incorrect.');
-      } else {
-        setLoginError(error.message);
-      }
-    }
-    setLoginLoading(false);
   };
 
   return (
@@ -154,67 +134,7 @@ export default function PreInscriptionPage() {
         )}
 
         <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-8">
-          {showLogin ? (
-            <>
-              <div className="flex items-center gap-3 mb-6">
-                <button
-                  onClick={() => { setShowLogin(false); setLoginError(''); }}
-                  className="text-gray-400 hover:text-gray-600 transition text-sm"
-                >
-                  ← Retour
-                </button>
-              </div>
-              <h2 className="text-xl font-bold text-gray-800 mb-2 text-center">
-                Connexion
-              </h2>
-              <p className="text-gray-500 text-sm text-center mb-6">
-                Connectez-vous a votre compte GardFlow
-              </p>
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
-                  <input
-                    type="email"
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                    required
-                    placeholder="votre@email.fr"
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-gray-50 text-gray-900 placeholder-gray-400"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Mot de passe</label>
-                  <input
-                    type="password"
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    required
-                    placeholder="••••••••"
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-gray-50 text-gray-900 placeholder-gray-400"
-                  />
-                </div>
-                {loginError && (
-                  <p className="text-red-500 text-sm bg-red-50 border border-red-100 rounded-xl px-4 py-3">
-                    {loginError}
-                  </p>
-                )}
-                <button
-                  type="submit"
-                  disabled={loginLoading}
-                  className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 hover:from-blue-700 hover:to-cyan-600 transition-all shadow-lg hover:shadow-xl disabled:opacity-60 disabled:cursor-not-allowed mt-2"
-                >
-                  {loginLoading ? (
-                    <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <LogIn className="w-5 h-5" />
-                      Se connecter
-                    </>
-                  )}
-                </button>
-              </form>
-            </>
-          ) : submitted ? (
+          {submitted ? (
             <div className="text-center py-4">
               <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <CheckCircle className="w-10 h-10 text-green-500" />
@@ -309,16 +229,6 @@ export default function PreInscriptionPage() {
                 </button>
               </form>
 
-              <div className="mt-6 pt-6 border-t border-gray-100 text-center">
-                <p className="text-sm text-gray-500 mb-3">Vous avez deja un compte ?</p>
-                <button
-                  onClick={() => setShowLogin(true)}
-                  className="inline-flex items-center gap-2 bg-gray-900 text-white font-semibold px-6 py-3 rounded-xl hover:bg-gray-800 transition-all shadow"
-                >
-                  <LogIn className="w-4 h-4" />
-                  Se connecter
-                </button>
-              </div>
             </>
           )}
         </div>
