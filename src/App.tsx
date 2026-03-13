@@ -74,7 +74,7 @@ function App() {
     <AppProvider>
       <AppContent />
     </AppProvider>  
-  );
+  ); 
 }
 
 export default App;
