@@ -73,8 +73,8 @@ function App() {
   return (
     <AppProvider>
       <AppContent />
-    </AppProvider>  
-  ); 
+    </AppProvider>
+  );
 }
 
 export default App;
